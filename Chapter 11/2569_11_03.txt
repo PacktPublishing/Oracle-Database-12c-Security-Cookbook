@@ -1,0 +1,127 @@
+//How to do it section
+
+
+ENCRYPTION_WALLET_LOCATION=
+  (SOURCE=
+    (METHOD=FILE)
+      (METHOD_DATA=
+     (DIRECTORY=/u01/app/oracle/admin/$ORACLE_SID/wallet)))
+
+
+$ . oraenv
+
+cdb1
+
+$ sqlplus system
+SQL> create user c##tdedba identified by oracle123 container=all;
+
+SQL> grant administer key management to c##tdedba container=all;
+
+SQL> grant create session to c##tdedba container=all;
+
+SQL> grant select any dictionary to c##tdedba container=all;
+
+SQL> grant set container to c##tdedba container=all;
+
+SQL> connect c##tdedba/oracle123
+SQL> ADMINISTER KEY MANAGEMENT CREATE KEYSTORE '/u01/app/oracle/admin/cdb1/wallet' identified by oracle1;
+
+SQL> select wallet_type,wrl_type,status from v$encryption_wallet;
+
+SQL> ADMINISTER KEY MANAGEMENT SET KEYSTORE OPEN IDENTIFIED BY oracle1;
+SQL> select wallet_type,wrl_type,status from v$encryption_wallet;
+
+SQL> select con_id, tag, key_id from v$encryption_keys;
+
+SQL> ADMINISTER KEY MANAGEMENT SET KEY USING TAG 'description: root key' IDENTIFIED BY oracle1 WITH BACKUP;
+SQL> select con_id, tag, key_id from v$encryption_keys;
+
+SQL> select wallet_type,wrl_type,status from v$encryption_wallet;
+
+SQL> alter session set container=pdb11;
+
+SQL> select wallet_type,wrl_type,status from v$encryption_wallet;
+
+SQL> ADMINISTER KEY MANAGEMENT SET KEYSTORE OPEN IDENTIFIED BY oracle1;
+SQL> select wallet_type,wrl_type,status from v$encryption_wallet;
+
+SQL> select con_id, tag, key_id from v$encryption_keys;
+
+SQL> ADMINISTER KEY MANAGEMENT SET KEY USING TAG 'description: pdb11 key' IDENTIFIED BY oracle1 WITH BACKUP;
+
+SQL> select con_id, tag, key_id from v$encryption_keys;
+
+SQL> select wallet_type,wrl_type,status from v$encryption_wallet;
+
+
+. oraenv
+
+cdb2
+
+$ sqlplus / as sysdba
+
+SQL> create user c##tdedba identified by oracle321 container=all;
+SQL> grant syskm to c##tdedba container=all;
+
+SQL> ADMINISTER KEY MANAGEMENT CREATE KEYSTORE '/u01/app/oracle/admin/cdb2/wallet' identified by oracle2;
+
+SQL> select wallet_type,wrl_type,status from v$encryption_wallet;
+
+SQL> ADMINISTER KEY MANAGEMENT SET KEYSTORE OPEN IDENTIFIED BY oracle2 container=all;
+
+SQL> select wallet_type,wrl_type,status from v$encryption_wallet;
+
+SQL> ADMINISTER KEY MANAGEMENT SET KEY USING TAG 'description: all pdbs' IDENTIFIED BY oracle2 WITH BACKUP container=all;
+
+SQL> select con_id, tag, key_id from v$encryption_keys;
+
+SQL> connect / as sysdba
+
+SQL> alter session set container=pdb21;
+
+SQL> select wallet_type,wrl_type,status from v$encryption_wallet;
+
+SQL> select con_id, tag, key_id from v$encryption_keys;
+
+. oraenv
+
+cdb1
+
+$ sqlplus c##zoran@pdb11
+SQL> create table hr.enc_tbl(a int, b varchar2(20) encrypt);
+SQL> insert into hr.enc_tbl values (1, 'value1');
+SQL> insert into hr.enc_tbl values (2, 'value2');
+SQL> commit;
+SQL> select * from hr.enc_tbl;
+
+SQL> ADMINISTER KEY MANAGEMENT EXPORT KEYS WITH SECRET "secret1" to '/home/oracle/keys.exp' IDENTIFIED BY oracle1;
+
+SQL> alter pluggable database pdb11 close immediate;
+SQL> alter pluggable database pdb11 unplug into '/home/oracle/pdb11.xml';
+SQL> drop pluggable database pdb11 keep datafiles;
+
+. oraenv
+
+cdb2
+
+$ sqlplus / as sysdba
+SQL> create pluggable database pdb11 using '/home/oracle/pdb11.xml';
+
+SQL> alter pluggable database pdb11 open;
+
+SQL> show pdbs
+
+SQL> alter session set container=pdb11;
+SQL> ADMINISTER KEY MANAGEMENT SET KEYSTORE OPEN IDENTIFIED BY oracle2;
+SQL> select * from hr.enc_tbl;
+
+SQL> ADMINISTER KEY MANAGEMENT IMPORT ENCRYPTION KEYS WITH SECRET "secret1" FROM '/home/oracle/keys.exp' IDENTIFIED BY oracle2 WITH BACKUP;
+
+SQL> alter pluggable database pdb11 close immediate;
+SQL> alter pluggable database pdb11 open;
+SQL> show pdbs
+
+SQL> alter session set container=pdb11;
+SQL> ADMINISTER KEY MANAGEMENT SET KEYSTORE OPEN IDENTIFIED BY oracle2;
+SQL> select * from hr.enc_tbl;
+

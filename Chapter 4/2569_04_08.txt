@@ -1,0 +1,9 @@
+
+//How to do it section
+
+$ sqlplus / as sysdba
+
+SQL> grant EXEMPT ACCESS POLICY to susan;
+
+SQL> connect susan
+SQL> select * from hr.emp_vpd_test;

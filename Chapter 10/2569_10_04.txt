@@ -1,0 +1,31 @@
+//How to do it section
+
+$ rman target ‘”tom@ora12cR1 AS SYSBACKUP”’
+
+RMAN> backup tablespace EXAMPLE;
+RMAN> list backup;
+RMAN> exit
+
+$ sqlplus maja
+
+SQL> select file_name from dba_data_files where tablespace_name=’EXAMPLE’;
+
+SQL> !rm /u01/app/oracle/oradata/ORA12CR1/datafile/o1_mf_example_9z79vpcj_.dbf
+
+SQL> alter tablespace example offline immediate;
+SQL> exit
+
+$ rman target ‘”tom@ora12cR1 AS SYSBACKUP”’
+RMAN> restore tablespace EXAMPLE;
+
+RMAN> recover tablespace EXAMPLE;
+RMAN> exit
+
+$ sqlplus maja
+SQL> alter tablespace EXAMPLE online; 
+
+SQL> connect jack
+SQL> EXEC SYS.DBMS_AUDIT_MGMT.FLUSH_UNIFIED_AUDIT_TRAIL;
+SQL> select dbusername, rman_operation
+from unified_audit_trail
+where rman_operation is not null; 

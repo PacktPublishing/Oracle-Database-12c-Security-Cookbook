@@ -1,0 +1,23 @@
+﻿//How to do it section
+
+SQL> connect sys
+
+SQL> grant administer key management to maja;
+
+SQL> connect maja
+
+SQL> ADMINISTER KEY MANAGEMENT CREATE KEYSTORE '/u01/app/oracle/admin/ora12cR1/wallet' identified by welcome1;
+
+SQL> ADMINISTER KEY MANAGEMENT SET KEYSTORE OPEN IDENTIFIED BY welcome1;
+
+
+
+//There’s more section
+
+
+
+$ ls -l /u01/app/oracle/admin/ora12cR1/wallet
+
+
+
+SQL> SELECT STATUS, WALLET_TYPE FROM V$ENCRYPTION_WALLET;

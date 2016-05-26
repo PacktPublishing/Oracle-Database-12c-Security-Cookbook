@@ -1,0 +1,61 @@
+//Getting ready section
+
+SQL> connect dbv_owner
+
+SQL> BEGIN
+ DBMS_MACADM.CREATE_REALM(
+  realm_name    => 'HR Realm', 
+  description   => 'Protects HR schema', 
+  enabled       => DBMS_MACUTL.G_YES, 
+  audit_options => DBMS_MACUTL.G_REALM_AUDIT_OFF,
+  realm_type    => 0);
+END; 
+/
+
+SQL> BEGIN
+ DBMS_MACADM.ADD_OBJECT_TO_REALM(
+  realm_name   => 'HR Realm', 
+  object_owner => 'HR', 
+  object_name  => '%', 
+  object_type  => '%'); 
+END;
+/
+
+SQL> connect system
+SQL> CREATE DIRECTORY dp_dir AS '/u01/app/oracle/oradata/dp_exp';
+
+SQL> connect dbv_acctmgr
+SQL> create user piter identified by T2abc_4z1;
+SQL> grant create session to piter;
+
+SQL> connect / as sysdba
+SQL> grant create table, unlimited tablespace to piter;
+SQL> grant read, write ON DIRECTORY dp_dir to piter;
+SQL> grant DATAPUMP_EXP_FULL_DATABASE to piter;
+
+//How to do it section
+
+$ sqlplus dbv_owner
+
+SQL> SELECT GRANTED_ROLE FROM DBA_ROLE_PRIVS WHERE 
+GRANTED_ROLE LIKE '%FULL%' AND GRANTEE='PITER';
+
+SQL> EXEC DBMS_MACADM.AUTHORIZE_DATAPUMP_USER ('PITER', 'HR');
+
+SQL> column grantee format A10
+SQL> column schema format A15
+SQL> column object format A15
+
+SQL> SELECT * FROM DVSYS.DBA_DV_DATAPUMP_AUTH WHERE GRANTEE = 'PITER';
+
+$ expdp piter DIRECTORY=dp_dir DUMPFILE= exptables.dmp TABLES=hr.employees, hr.departments
+
+$ expdp piter DIRECTORY=dp_dir DUMPFILE=expsh.dmp SCHEMAS=hr ENCRYPTION=NONE
+
+//How it works section
+
+SQL> EXEC DBMS_MACADM.AUTHORIZE_DATAPUMP_USER ('AMY', 'HR', 'EMPLOYEES');
+
+SQL> EXEC DBMS_MACADM.AUTHORIZE_DATAPUMP_USER ('KIM');
+SQL> grant DV_OWNER to kim;
+

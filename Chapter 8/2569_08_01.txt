@@ -1,0 +1,10 @@
+//How to do it section
+
+$ . oraenv
+
+? ora12cR1
+
+$ mkdir $ORACLE_BASE/admin/ora12cR1/wallet
+$ vi $ORACLE_HOME/network/admin/sqlnet.ora
+
+

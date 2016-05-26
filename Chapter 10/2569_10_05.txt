@@ -1,0 +1,25 @@
+
+//Getting ready section
+
+SQL> CREATE DIRECTORY my_dir AS '/u01/app/oracle/oradata/export';
+
+SQL> grant read, write ON DIRECTORY my_dir to maja;
+
+
+//How to do it section
+
+$ sqlplus jack
+
+SQL> CREATE AUDIT POLICY DP_POLICY ACTIONS
+COMPONENT=datapump export;
+
+SQL> AUDIT POLICY DP_POLICY;
+
+$ expdp maja@ora12cR1 dumpfile=test tables=hr.departments DIRECTORY=my_dir
+
+SQL> connect jack
+SQL> select DP_TEXT_PARAMETERS1,DP_BOOLEAN_PARAMETERS1
+from unified_audit_trail
+where audit_type='Datapump' and dbusername='MAJA'; 
+
+

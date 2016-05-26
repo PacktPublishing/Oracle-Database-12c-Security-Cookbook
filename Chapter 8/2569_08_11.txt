@@ -1,0 +1,19 @@
+
+//How to do it section
+
+$ rman target '"zoran@orcl as sysbackup"'
+
+RMAN> CONFIGURE ENCRYPTION FOR DATABASE ON;
+
+
+RMAN> BACKUP TABLESPACE EXAMPLE tag 'tran_mode';
+
+
+RMAN> SET ENCRYPTION ON IDENTIFIED BY "password_1";
+
+RMAN> BACKUP TABLESPACE EXAMPLE tag 'dual_mode';
+
+
+RMAN> SET ENCRYPTION ON IDENTIFIED BY "password_2" ONLY;
+
+RMAN> BACKUP TABLESPACE EXAMPLE tag 'pass_mode';

@@ -1,0 +1,12 @@
+//How to do it section
+
+$ sqlplus system
+
+SQL> select username, object_owner, object_name, obj_priv
+     from DBA_USED_OBJPRIVS
+     where username='ALAN';
+
+
+SQL> select username, object_owner, object_name, obj_priv, path
+     from DBA_USED_OBJPRIVS_PATH
+     where capture='ALL_PRIV_POL' and username='ALAN';

@@ -1,0 +1,75 @@
+//Getting ready section
+
+SQL> connect maja
+SQL> BEGIN
+     DBMS_RLS.DROP_POLICY('HR','EMP_VPD_TEST','TEST_POL1');
+     DBMS_RLS.DROP_POLICY('HR','EMP_VPD_TEST','TEST_POL2');
+     DBMS_RLS.DROP_POLICY('HR','EMP_VPD_TEST','TEST_COL');
+     END;
+     /
+
+//How to do it section
+
+$ sqlplus maja
+
+SQL> BEGIN
+     DBMS_RLS.ADD_GROUPED_POLICY(
+     object_schema => 'HR',
+     object_name => 'EMP_VPD_TEST',
+     policy_group => 'pol_grp_A',
+     policy_name => 'TEST_POL1',
+     function_schema => 'MAJA',
+     policy_function => 'NO_ACCESS',
+     statement_types => 'SELECT');
+     END;
+     /
+
+SQL> BEGIN
+     DBMS_RLS.ADD_GROUPED_POLICY(
+     object_schema => 'HR',
+     object_name => 'EMP_VPD_TEST',
+     policy_group => 'pol_grp_A',
+     policy_name => 'TEST_COL',
+     function_schema => 'MAJA',
+     policy_function => 'ROLE_ACCESS',
+     statement_types => 'SELECT',
+     sec_relevant_cols => 'SALARY,COMM_PCT',
+     sec_relevant_cols_opt => DBMS_RLS.ALL_ROWS);
+     END;
+     /
+
+SQL> BEGIN
+     DBMS_RLS.ADD_GROUPED_POLICY(
+     object_schema => 'HR',
+     object_name => 'EMP_VPD_TEST',
+     policy_group => 'pol_grp_B',
+     policy_name => 'TEST_POL2',
+     function_schema => 'MAJA',
+     policy_function => 'EMP_ACCESS',
+     statement_types => 'SELECT,DELETE');
+     END;
+     /
+
+
+SQL> CREATE OR REPLACE TRIGGER driver_ctx_logon
+     AFTER LOGON ON DATABASE
+     BEGIN
+     IF (SYS_CONTEXT('USERENV','CLIENT_PROGRAM_NAME')) = 'SQL Developer' 
+      THEN DRIVER_CTX_PKG.set_driver('pol_grp_A');
+       else DRIVER_CTX_PKG.SET_DRIVER('pol_grp_B');
+       end if;
+     END;
+     /
+
+
+$ sqlplus joel
+SQL> select sys_context('driver_ctx','ACTIVE') from dual;
+SQL> connect joel
+SQL> select * from emp_vpd_test;
+
+$ sqlplus susan
+SQL> select * from emp_vpd_test;
+
+//Using SQL Developer, connect as user emma and view data in table hr.emp_vpd_test
+
+select * from hr.emp_vpd_test;

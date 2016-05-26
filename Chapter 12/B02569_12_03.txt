@@ -1,0 +1,40 @@
+//How to do it section
+
+$ sqlplus maja
+
+SQL> CREATE OR REPLACE PACKAGE sh_ctx_pkg IS
+       PROCEDURE set_cust_id;
+     END;
+     /
+
+
+SQL> CREATE OR REPLACE PACKAGE BODY sh_ctx_pkg IS
+       PROCEDURE set_cust_id
+       IS
+         v_cust_id NUMBER;
+       BEGIN
+         SELECT cust_id INTO v_cust_id FROM sh.customers 
+           WHERE UPPER(cust_email) =
+             (SYS_CONTEXT('USERENV','SESSION_USER') || '@COMPANY.EXAMPLE.COM');
+         DBMS_SESSION.SET_CONTEXT
+           ('sh_client','cust_id',v_cust_id);
+       EXCEPTION
+         WHEN no_data_found THEN
+           DBMS_SESSION.SET_CONTEXT
+             ('sh_client','cust_id',0);
+       END;
+END;
+/
+
+
+SQL> CREATE OR REPLACE TRIGGER sh_ctx_logon
+     AFTER LOGON ON DATABASE
+     BEGIN
+       sh_ctx_pkg.set_cust_id();
+     END;
+     /
+
+
+//There's more section
+
+SQL> exec DBMS_SESSION.SET_CONTEXT('sh_client','cust_id',101);

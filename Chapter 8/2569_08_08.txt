@@ -1,0 +1,8 @@
+﻿
+//How to do it section
+
+$ sqlplus maja
+
+
+SQL> ADMINISTER KEY MANAGEMENT CREATE LOCAL AUTO_LOGIN KEYSTORE FROM KEYSTORE '/u01/app/oracle/admin/ora12cR1/wallet' IDENTIFIED BY welcome1;
+SQL> ADMINISTER KEY MANAGEMENT CREATE AUTO_LOGIN KEYSTORE FROM KEYSTORE '/u01/app/oracle/admin/ora12cR1/wallet' IDENTIFIED BY welcome1;

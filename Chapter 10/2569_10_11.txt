@@ -1,0 +1,18 @@
+
+//How to do it section
+
+SQL> connect jack
+
+SQL> select count (*) from unified_audit_trail;
+
+SQL> exec DBMS_AUDIT_MGMT.CLEAN_AUDIT_TRAIL(
+AUDIT_TRAIL_TYPE => DBMS_AUDIT_MGMT.AUDIT_TRAIL_UNIFIED)
+
+SQL> exec DBMS_AUDIT_MGMT.CREATE_PURGE_JOB
+(AUDIT_TRAIL_TYPE => DBMS_AUDIT_MGMT.AUDIT_TRAIL_UNIFIED,
+AUDIT_TRAIL_PURGE_INTERVAL => 24,
+AUDIT_TRAIL_PURGE_NAME => ‘My_Job’,
+USE_LAST_ARCH_TIMESTAMP => TRUE)
+
+SQL> select count (*) from unified_audit_trail;
+

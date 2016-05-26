@@ -1,0 +1,107 @@
+//How to do it section
+
+$ sqlplus maja@pdb1
+
+SQL> SELECT EMAIL FROM HR.EMPLOYEES FETCH FIRST 10 ROWS ONLY;
+
+SQL> SELECT EMAIL_ADDRESS FROM CHALLENGEZORAN.T1;
+
+SQL> connect c##zoran/oracle@pdb1
+
+SQL> BEGIN
+ DBMS_TSDP_PROTECT.ENABLE_PROTECTION_TYPE(
+ sensitive_type => 'email_type');
+ END;
+ /
+
+SQL> connect maja/oracle@pdb1
+
+SQL> SELECT EMAIL FROM HR.EMPLOYEES FETCH FIRST 10 ROWS ONLY;
+
+SQL> SELECT EMAIL_ADDRESS FROM CHALLENGEZORAN.T1;
+
+
+SQL> connect c##zoran/oracle@pdb1
+
+SQL> BEGIN
+ DBMS_TSDP_PROTECT.DISABLE_PROTECTION_TYPE(
+ sensitive_type => 'email_type');
+ END;
+ /
+ 
+SQL> connect maja/oracle@pdb1
+
+SQL> SELECT EMAIL FROM HR.EMPLOYEES FETCH FIRST 10 ROWS ONLY;
+
+SQL> SELECT EMAIL_ADDRESS FROM CHALLENGEZORAN.T1;
+
+
+SQL> connect c##zoran/oracle@pdb1
+
+SQL> BEGIN
+ DBMS_TSDP_MANAGE.DROP_SENSITIVE_COLUMN (
+schema_name => 'CHALLENGEZORAN',
+table_name => 'T1',
+column_name => 'EMAIL_ADDRESS');
+END;
+/
+
+SQL> BEGIN
+ DBMS_TSDP_MANAGE.DROP_SENSITIVE_COLUMN (
+schema_name => 'HR',
+table_name => 'EMPLOYEES',
+column_name => 'EMAIL');
+END;
+/
+
+SQL> BEGIN
+DBMS_TSDP_MANAGE.DROP_SENSITIVE_TYPE (
+sensitive_type => 'email_type');
+END;
+/
+
+SQL> BEGIN
+DBMS_TSDP_PROTECT.DROP_POLICY(
+policy_name => 'redact_regexp_email');
+END;
+/
+
+
+//There's more section
+
+SQL> begin
+2 DBMS_TSDP_PROTECT.ENABLE_PROTECTION_COLUMN(
+3 schema_name =>'CHALLENGEZORAN',
+4 table_name =>'T1',
+5 column_name =>'EMAIL_ADDRESS', 
+6 policy => 'redact_regexp_email');
+7 end;
+8 /
+
+SQL> begin
+2 DBMS_TSDP_PROTECT.ENABLE_PROTECTION_COLUMN(
+3 schema_name =>'HR',
+4 table_name =>'EMPLOYEES',
+5 column_name =>'EMAIL', 
+6 policy => 'redact_regexp_email');
+7 end;
+8 /
+
+SQL> begin
+ DBMS_TSDP_PROTECT.DISABLE_PROTECTION_COLUMN(
+ schema_name =>'CHALLENGEZORAN',
+ table_name =>'T1',
+ column_name =>'EMAIL_ADDRESS', 
+ policy => 'redact_regexp_email');
+ end;
+ /
+
+
+SQL> begin
+ DBMS_TSDP_PROTECT.DISABLE_PROTECTION_COLUMN(
+ schema_name =>'HR',
+ table_name =>'EMPLOYEES',
+ column_name =>'EMAIL', 
+ policy => 'redact_regexp_email');
+ end;
+ /

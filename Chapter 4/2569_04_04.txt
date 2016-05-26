@@ -1,0 +1,22 @@
+
+//How to do it section
+
+$ sqlplus maja
+
+SQL> CREATE CONTEXT driver_ctx using driver_ctx_pkg;
+
+
+SQL> CREATE OR REPLACE PACKAGE driver_ctx_pkg IS
+       PROCEDURE set_driver (p_group varchar2);
+     END;
+     /
+SQL> CREATE OR REPLACE PACKAGE BODY driver_ctx_pkg IS
+       PROCEDURE set_driver (p_group varchar2)
+       IS
+       BEGIN
+        DBMS_SESSION.SET_CONTEXT('driver_ctx','ACTIVE',p_group);
+      END;
+   END ;
+/
+
+

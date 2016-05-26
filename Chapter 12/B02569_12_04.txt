@@ -1,0 +1,18 @@
+//Getting ready section
+
+SQL> create user sofia identified by Q14be7NP;
+SQL> grant create session to sofia;
+SQL> grant select on sh.customers to sofia;
+
+SQL> insert into sh.customers values (80000,'Sofia','Smith','F',1979,'Married','Albert Embankment 19','SE1 7HD','London',11111,'England','1111',52790,'1111111','12',30,'Sofia@company.example.com',10000,1,1,sysdate,sysdate,'T');
+
+SQL> commit;
+
+//How to do it section
+
+$ sqlplus sofia
+
+SQL> SELECT COUNT(*) FROM SH.CUSTOMERS;
+
+SQL> SELECT COUNT(*) FROM SH.CUSTOMERS
+     WHERE cust_id = sys_context('sh_client','cust_id');

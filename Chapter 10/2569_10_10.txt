@@ -1,0 +1,33 @@
+
+//How to do it section
+
+SQL> connect jack
+
+SQL> AUDIT CONTEXT NAMESPACE USERENV 
+                   ATTRIBUTES SESSION_USER, SERVICE_NAME;
+
+SQL> AUDIT CONTEXT NAMESPACE USERENV
+                   ATTRIBUTES HOST BY jill;
+
+SQL> set linesize 180
+SQL> column namespace format A30
+SQL> column attribute format A30
+SQL> column user_name format A30
+
+SQL> select * from audit_unified_contexts; 
+
+SQL> connect jill
+
+SQL> SELECT APPLICATION_CONTEXTS FROM UNIFIED_AUDIT_TRAIL
+     WHERE APPLICATION_CONTEXTS IS NOT NULL;
+
+
+//How it works section
+
+SQL> EXEC SYS.DBMS_AUDIT_MGMT.FLUSH_UNIFIED_AUDIT_TRAIL;
+
+//There's more section
+
+SQL> connect jack
+SQL> NOAUDIT CONTEXT NAMESPACE USERENV
+     ATTRIBUTES HOST BY jill;

@@ -1,0 +1,15 @@
+
+//How to do it section
+
+SQL> connect jack
+
+SQL> SELECT POLICY_NAME, ENABLED_OPT, USER_NAME,
+     SUCCESS, FAILURE
+     FROM AUDIT_UNIFIED_ENABLED_POLICIES;
+
+SQL> NOAUDIT policy oe_policy BY JOHN;
+
+SQL> select * from AUDIT_UNIFIED_ENABLED_POLICIES;
+
+SQL> drop audit policy oe_policy;
+

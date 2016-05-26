@@ -1,0 +1,24 @@
+﻿
+//How to do it section
+
+$ sqlplus zoran
+
+
+SQL> CREATE TABLESPACE TEST_ENC
+DATAFILE '/u01/app/oracle/oradata/ora12cR1/datafile/testenc01.dbf' 
+SIZE 20M
+ ENCRYPTION USING 'AES192' 
+DEFAULT STORAGE (ENCRYPT);
+
+
+//How it works section
+
+
+SQL> connect / as sysdba
+
+
+SQL> desc v$encrypted_tablespaces
+
+
+SQL> select encryptedts, encryptionalg from v$encrypted_tables;
+

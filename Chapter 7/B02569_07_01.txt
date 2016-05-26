@@ -1,0 +1,11 @@
+//How to do it section
+
+$ sqlplus system
+
+SQL> BEGIN
+    SYS.DBMS_PRIVILEGE_CAPTURE.CREATE_CAPTURE(
+    name => 'ALL_PRIV_POL',
+    description => 'All privileges',
+    type => DBMS_PRIVILEGE_CAPTURE.G_DATABASE );
+    END;
+    /

@@ -1,0 +1,46 @@
+//How to do it section
+
+$ sqlplus maja
+
+SQL> create user jack identified by pQ3s7a4w2;
+SQL> grant create session, audit_admin to jack; 
+
+SQL> create user jill identified by t1m5_R2f3;
+SQL> grant create session, audit_viewer to jill;
+
+//There's more section
+
+SQL> connect jill
+SQL> create audit policy jill_policy
+     actions delete on oe.orders; 
+
+SQL> conn maja
+SQL> grant select,delete on oe.orders to jill;
+
+
+SQL> connect jill
+SQL> create audit policy jill_policy
+     actions delete on oe.orders;
+
+SQL> connect maja
+SQL> revoke select,delete on oe.orders from jill;
+SQL> grant audit system to jill;
+
+SQL> connect jill
+SQL> create audit policy jill_policy
+     actions delete on oe.orders;
+SQL> drop audit policy jill_policy;
+
+SQL> connect maja
+SQL> revoke audit system from jill;
+
+SQL> connect jill 
+SQL> select dbusername, action_name from unified_audit_trail
+     where unified_audit_policies='ORA_SECURECONFIG';
+
+
+SQL> connect jack
+SQL> audit policy ora_account_mgmt;
+SQL> noaudit policy ora_account_mgmt;
+
+

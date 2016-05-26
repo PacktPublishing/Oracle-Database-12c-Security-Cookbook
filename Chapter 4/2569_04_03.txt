@@ -1,0 +1,29 @@
+//How to do it section
+
+$ sqlplus maja
+
+SQL> BEGIN
+     DBMS_RLS.ADD_POLICY(object_schema => 'HR',
+     object_name => 'EMP_VPD_TEST',
+     policy_name => 'TEST_COL',
+     function_schema => 'MAJA',
+     policy_function => 'ROLE_ACCESS',
+     statement_types => 'SELECT',
+     sec_relevant_cols => 'SALARY,COMM_PCT',
+     sec_relevant_cols_opt => DBMS_RLS.ALL_ROWS);
+     END;
+     /
+
+SQL> grant HREMP_TEST to zoran; 
+
+SQL> connect zoran
+SQL> select * from hr.emp_vpd_test;
+
+SQL> connect maja
+SQL> EXEC DBMS_RLS.ENABLE_POLICY  ('HR','EMP_VPD_TEST','TEST_POL2',FALSE);
+
+SQL> connect zoran
+SQL> select * from hr.emp_vpd_test;
+
+SQL> connect joel
+SQL> select * from hr.emp_vpd_test;

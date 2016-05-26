@@ -1,0 +1,45 @@
+//Getting ready section
+
+SQL> UPDATE HR.EMPLOYEES SET EMAIL = EMAIL || '@example.com' WHERE 1=1;
+SQL> commit;
+
+//How to do it section
+
+$ sqlplus c##zoran@pdb1
+
+//if needed disable the policy, afterwards connect as user maja
+
+SQL> connect maja/oracle@pdb1
+
+SQL> SELECT EMAIL FROM HR.EMPLOYEES FETCH FIRST 10 ROWS ONLY;
+
+SQL> SELECT EMAIL_ADDRESS FROM CHALLENGEZORAN.T1;
+
+SQL> connect c##zoran@pdb1
+
+SQL> DECLARE
+ redact_feature_options DBMS_TSDP_PROTECT.FEATURE_OPTIONS;
+ policy_conditions DBMS_TSDP_PROTECT.POLICY_CONDITIONS;
+ BEGIN
+ redact_feature_options ('expression') :='1=1';
+ redact_feature_options ('function_type') :='DBMS_REDACT.REGEXP'; 
+ redact_feature_options ('regexp_pattern'):='([A-Za-z0-9._%+-]+)@([A-Za-z0-9.-]+\.[A-Za-z]{2,4})';
+ redact_feature_options ('regexp_replace_string'):='\1@mydomain.com';
+ redact_feature_options ('regexp_position'):='1';
+ redact_feature_options ('regexp_occurrence'):='DBMS_REDACT.RE_FIRST';
+ policy_conditions(DBMS_TSDP_PROTECT.DATATYPE) := 'VARCHAR2';
+ DBMS_TSDP_PROTECT.ALTER_POLICY ('redact_regexp_email',redact_feature_options, policy_conditions);
+ end;
+ /
+
+SQL> BEGIN
+ DBMS_TSDP_PROTECT.ENABLE_PROTECTION_TYPE(
+ sensitive_type => 'email_type');
+ END;
+ /
+
+SQL> SELECT EMAIL FROM HR.EMPLOYEES FETCH FIRST 10 ROWS ONLY;
+SQL> SELECT EMAIL_ADDRESS FROM CHALLENGEZORAN.T1;
+
+
+

@@ -1,0 +1,31 @@
+//Getting ready section
+
+SQL> CREATE TABLE CHALLENGEZORAN.T1 (NAME VARCHAR2(30), EMAIL_ADDRESS VARCHAR2(40));
+SQL> INSERT INTO CHALLENGEZORAN.T1 VALUES ('ZORAN PAVLOVIC', 'ZORAN.PAVLOVIC@CHALLENGEZORAN.COM');
+SQL> INSERT INTO CHALLENGEZORAN.T1 VALUES ('MAJA VESELICA', 'MAJA.VESELICA@CHALLENGEZORAN.COM');
+SQL> COMMIT;
+SQL> SELECT * FROM CHALLENGEZORAN.T1;
+
+
+//How to do it section
+
+$ sqlplus c##zoran@pdb1
+
+SQL> BEGIN
+ DBMS_TSDP_MANAGE.ADD_SENSITIVE_COLUMN(
+ schema_name => 'CHALLENGEZORAN',
+ table_name => 'T1',
+ column_name => 'EMAIL_ADDRESS',
+ sensitive_type => 'email_type');
+ END;
+ /
+
+SQL> BEGIN
+DBMS_TSDP_MANAGE.ADD_SENSITIVE_COLUMN(
+ schema_name => ‘HR',
+ table_name => ‘EMPLOYEES',
+ column_name => 'EMAIL',
+ sensitive_type => 'email_type');
+ END;
+ /
+

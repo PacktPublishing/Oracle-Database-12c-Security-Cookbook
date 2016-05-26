@@ -1,0 +1,7 @@
+//How to do it section
+
+$ sqlplus system
+
+SQL> select username, object_owner, object_name, obj_priv
+     from DBA_UNUSED_OBJ_PRIVS
+     where username='ALAN';

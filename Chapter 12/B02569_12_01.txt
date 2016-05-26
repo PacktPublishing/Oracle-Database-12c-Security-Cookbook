@@ -1,0 +1,22 @@
+//How to do it section
+
+$ sqlplus maja
+
+SQL> SELECT SYS_CONTEXT ('USERENV','HOST') FROM DUAL;
+
+SQL> SELECT SYS_CONTEXT ('USERENV','SESSION_USER') FROM DUAL;
+
+SQL> SELECT SYS_CONTEXT ('USERENV','CLIENT_PROGRAM_NAME') FROM DUAL;
+
+SQL> SELECT SYS_CONTEXT ('USERENV','UNIFIED_AUDIT_SESSIONID') FROM DUAL;
+
+
+//There's more section
+
+SQL> create role test_role;
+SQL> grant select on hr.employees to test_role;
+SQL> grant test_role to zoran;
+SQL> select sys_context ('SYS_SESSION_ROLES','TEST_ROLE') from dual;
+
+SQL> connect zoran
+SQL> select sys_context ('SYS_SESSION_ROLES','TEST_ROLE') from dual;

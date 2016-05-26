@@ -1,0 +1,15 @@
+//How to do it section
+
+$ sqlplus c##zoran@pdb1
+
+SQL> BEGIN 
+ DBMS_TSDP_MANAGE.ADD_SENSITIVE_TYPE ( 
+ sensitive_type => 'email_type', 
+ user_comment=>'Type for email redaction');
+ END;
+ /
+
+
+//There's more section
+
+SQL> select name from DBA_SENSITIVE_COLUMN_TYPES;

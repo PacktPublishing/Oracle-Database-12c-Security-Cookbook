@@ -1,0 +1,12 @@
+//How to do it section
+
+$ sqlplus system
+
+SQL> select username, sys_priv
+     from DBA_USED_SYSPRIVS
+     where username='ALAN';
+
+SQL> column path format A20
+SQL> select sys_priv, path
+     from DBA_USED_SYSPRIVS_PATH
+     where capture='ALL_PRIV_POL' and username='ALAN';

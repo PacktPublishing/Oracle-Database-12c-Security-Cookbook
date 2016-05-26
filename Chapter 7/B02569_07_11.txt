@@ -1,0 +1,13 @@
+//How to do it section
+
+$ sqlplus system
+
+SQL> BEGIN
+     SYS.DBMS_PRIVILEGE_CAPTURE.DROP_CAPTURE(
+     name => 'ALL_PRIV_POL');
+     END;
+     /
+
+SQL> SELECT username, sys_priv, obj_priv, object_owner, object_name
+     FROM DBA_USED_PRIVS
+     WHERE capture='ALL_PRIV_POL';

@@ -1,0 +1,20 @@
+
+//How to do it section
+
+$ sqlplus maja
+
+SQL> BEGIN
+DBMS_RLS.CREATE_POLICY_GROUP(
+object_schema => 'HR',
+object_name => 'EMP_VPD_TEST',
+policy_group => 'pol_grp_A');
+END;
+/
+
+SQL> BEGIN
+DBMS_RLS.CREATE_POLICY_GROUP(
+object_schema => 'HR',
+object_name => 'EMP_VPD_TEST',
+policy_group => 'pol_grp_B');
+END;
+/

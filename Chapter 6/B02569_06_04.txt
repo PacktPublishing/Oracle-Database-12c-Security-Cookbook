@@ -1,0 +1,17 @@
+//How to do it section
+
+$ sqlplus c##zoran@pdb1
+
+ SQL> BEGIN 
+ DBMS_TSDP_PROTECT.ASSOCIATE_POLICY( 
+ policy_name => 'redact_regexp_email', 
+ sensitive_type => 'email_type', 
+ associate => true);
+ END;
+ /
+ 
+
+//There's more section
+
+SQL> SELECT POLICY_NAME, SENSITIVE_TYPE FROM DBA_TSDP_POLICY_TYPE;
+

@@ -1,0 +1,14 @@
+
+//How to do it section
+
+$ connect jack
+
+SQL> CREATE AUDIT POLICY dbv_policy 
+     ACTIONS COMPONENT = DV Rule Set Failure on “Working Hours”, realm violation on “HR Realm”;
+
+SQL> audit policy dbv_policy;
+
+SQL> select * from oe.orders;
+SQL> update hr.employees set salary=30000 where salary=24000;
+
+

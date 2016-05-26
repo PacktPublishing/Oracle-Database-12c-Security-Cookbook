@@ -1,0 +1,18 @@
+//How to do it section
+
+$ sqlplus maja
+
+SQL> exec DBMS_RLS.ADD_POLICY(‘HR’,’EMP_VPD_TEST’,’TEST_POL1’,’MAJA’,’NO_ACCESS’,’SELECT’)
+
+SQL> connect susan
+SQL> SELECT * FROM HR.EMP_VPD_TEST;
+
+SQL> connect maja
+SQL> exec DBMS_RLS.ADD_POLICY('HR','EMP_VPD_TEST','TEST_POL2','MAJA','EMP_ACCESS','SELECT,DELETE')
+
+SQL> connect joel
+SQL> SELECT * FROM HR.EMP_VPD_TEST;
+
+SQL> connect emma
+SQL> SELECT * FROM HR.EMP_VPD_TEST;
+

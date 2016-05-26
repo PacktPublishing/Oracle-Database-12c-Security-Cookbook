@@ -1,0 +1,39 @@
+//How to do it section
+
+$ sqlplus system
+
+SQL> column name format A20
+SQL> select name, type, enabled
+     from DBA_PRIV_CAPTURES;
+
+SQL> BEGIN
+    SYS.DBMS_PRIVILEGE_CAPTURE.ENABLE_CAPTURE(
+    name => 'ALL_PRIV_POL');
+    END;
+    /
+
+SQL> CONNECT ALAN
+
+SQL> SELECT FIRST_NAME FROM HR.EMPLOYEES
+     WHERE SALARY < 1000;
+
+SQL> SELECT FIRST_NAME FROM HR.EMPLOYEES
+     WHERE SALARY < 3000;
+
+SQL> DELETE FROM HR.EMPLOYEES
+     WHERE FIRST_NAME = ‘Karen’;
+
+
+SQL> connect system
+
+SQL> BEGIN
+    SYS.DBMS_PRIVILEGE_CAPTURE.DISABLE_CAPTURE(
+    name => 'ALL_PRIV_POL');
+    END;
+    /
+
+SQL> BEGIN
+     SYS.DBMS_PRIVILEGE_CAPTURE.GENERATE_RESULT(
+     name => 'ALL_PRIV_POL');
+     END;
+     /

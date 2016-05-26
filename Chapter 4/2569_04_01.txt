@@ -1,0 +1,114 @@
+//Getting ready section
+
+SQL> CREATE TABLE hr.emp_vp_test (
+     emp_id NUMBER(6) NOT NULL,
+     first_name VARCHAR2(30) NOT NULL,
+     last_name VARCHAR2(30) NOT NULL,
+     email VARCHAR2(30) NOT NULL,
+     salary NUMBER(8,2),
+     comm_pct NUMBER(2,2),
+     mgr_id NUMBER(6));
+
+SQL> INSERT INTO hr.emp_vpd_test VALUES (1,'Maja','Veselica','maja@company.example.com',11000,0.05,3);
+SQL> INSERT INTO hr.emp_vpd_test VALUES (2,'Zoran','Pavlovic','zoran@company.example.com',11500,0.02,3);
+SQL> INSERT INTO hr.emp_vpd_test VALUES (3,'Joel','Adams','joel@company.example.com',15000,0.04,NULL);
+SQL> INSERT INTO hr.emp_vpd_test VALUES (4,'Emma','Cole','emma@company.example.com',8000,0.1,5);
+SQL> INSERT INTO hr.emp_vpd_test VALUES (5,'Susan','Smith','susan@company.example.com',16000,0,NULL);
+SQL> commit;
+
+//How to do it section
+
+$ sqlplus maja
+
+SQL> CREATE OR REPLACE FUNCTION no_access(
+    schema_var IN VARCHAR2,
+    table_var  IN VARCHAR2)
+  RETURN VARCHAR2
+IS
+  return_value VARCHAR2 (400);
+BEGIN
+  IF (SYS_CONTEXT('USERENV','SESSION_USER')) = 'SUSAN' THEN
+    return_value := '1=2';
+  ELSE
+    return_value := '1=1';
+  END IF;
+RETURN return_value;
+END no_access;
+/
+
+SQL> connect maja
+SQL> create context hremp_ctx using hremp_ctx_pkg;
+
+CREATE OR REPLACE PACKAGE hremp_ctx_pkg
+IS
+  PROCEDURE set_emp_id;
+END;
+/
+CREATE OR REPLACE PACKAGE BODY hremp_ctx_pkg
+IS
+  PROCEDURE set_emp_id
+  IS
+    v_emp_id NUMBER;
+  BEGIN
+    SELECT emp_id
+    INTO v_emp_id
+    FROM hr.emp_vpd_test
+    WHERE UPPER(email) = (SYS_CONTEXT('USERENV','SESSION_USER') || '@COMPANY.EXAMPLE.COM');
+    DBMS_SESSION.SET_CONTEXT ('hremp_ctx','emp_id',v_emp_id);
+  EXCEPTION
+  WHEN no_data_found THEN
+    DBMS_SESSION.SET_CONTEXT ('hremp_ctx','emp_id',0);
+  END;
+END;
+/
+
+SQL> CREATE OR REPLACE TRIGGER hremp_ctx_logon
+     AFTER LOGON ON DATABASE
+     BEGIN
+       hremp_ctx_pkg.set_emp_id();
+     END;
+     /
+
+SQL> CREATE OR REPLACE FUNCTION emp_access(
+    schema_var IN VARCHAR2,
+    table_var  IN VARCHAR2)
+  RETURN VARCHAR2
+IS
+  return_value VARCHAR2 (400);
+BEGIN
+  return_value:= '(emp_id = SYS_CONTEXT(''hremp_ctx'',''emp_id'')) OR (mgr_id = SYS_CONTEXT(''hremp_ctx'',''emp_id''))';
+  RETURN return_value;
+END emp_access;
+/
+
+SQL> create role HREMP_TEST;
+
+SQL> CREATE OR REPLACE FUNCTION role_access(
+    schema_var IN VARCHAR2,
+    table_var  IN VARCHAR2)
+  RETURN VARCHAR2
+IS
+  return_value VARCHAR2 (400);
+BEGIN
+  IF (SYS_CONTEXT('SYS_SESSION_ROLES','HREMP_TEST')) = 'TRUE' THEN
+    return_value:= '1=1';
+  ELSE
+    return_value := '1=2';
+  END IF;
+RETURN return_value;
+END role_access;
+/
+
+ 
+
+//There's more section
+
+SQL> select no_access ('a','b') from dual;
+SQL> grant execute on no_access to susan;
+
+SQL> connect susan
+SQL> select maja.no_access(‘a’,’b’) from dual;
+
+SQL> connect maja
+SQL> revoke execute on no_access from susan;
+

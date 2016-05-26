@@ -1,0 +1,12 @@
+//How to do it section
+
+$ sqlplus system
+
+SQL> BEGIN
+     SYS.DBMS_PRIVILEGE_CAPTURE.CREATE_CAPTURE(
+     name => 'CONT_PRIV_POL',
+     description => 'Privileges used by Steve',
+     type => DBMS_PRIVILEGE_CAPTURE.G_CONTEXT,
+     condition => 'SYS_CONTEXT(''USERENV'',''SESSION_USER'')=''STEVE''');
+     END;
+     /

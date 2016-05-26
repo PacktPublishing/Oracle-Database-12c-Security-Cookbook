@@ -1,0 +1,6 @@
+//How to do it section
+
+$ sqlplus maja
+
+SQL> CREATE CONTEXT sh_client USING sh_ctx_pkg;
+

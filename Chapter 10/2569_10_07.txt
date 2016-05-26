@@ -1,0 +1,33 @@
+//Getting ready section
+
+SQL> create role hr_role;
+SQL> grant select any table, create table to hr_role;
+SQL> grant insert on hr.departments to hr_role;
+
+SQL> create role oe_role;
+SQL> grant drop any table to oe_role;
+SQL> grant select, update on oe.orders to oe_role;
+
+SQL> grant oe_role to hr_role;
+
+SQL> grant hr_role to john;
+
+
+//How to do it section
+
+$ sqlplus jack
+
+SQL> CREATE AUDIT POLICY MY_POLICY1 
+     PRIVILEGES SELECT ANY TABLE
+     ACTIONS    CREATE TABLE, DROP TABLE;
+
+SQL> CREATE AUDIT POLICY ROLE_CON_POLICY
+    ROLES HR_ROLE
+    WHEN 'SYS_CONTEXT(''USERENV'',''HOST'')=’’ dbhost.orapassion.com'''
+    EVALUATE PER SESSION;
+
+SQL> CREATE AUDIT POLICY HR_POLICY 
+   ACTIONS SELECT,INSERT,UPDATE,DELETE ON HR.DEPARTMENTS;
+
+SQL> CREATE AUDIT POLICY OE_POLICY 
+    ACTIONS ALL ON OE.ORDERS;

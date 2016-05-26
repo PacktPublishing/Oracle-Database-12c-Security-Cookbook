@@ -1,0 +1,12 @@
+﻿//How to do it section
+
+$ sqlplus maja
+
+SQL> ADMINISTER KEY MANAGEMENT SET KEY IDENTIFIED BY welcome1 WITH BACKUP USING 'transparent';
+
+
+//There's more section
+
+SQL> SELECT STATUS, WALLET_TYPE FROM V$ENCRYPTION_WALLET;
+
+

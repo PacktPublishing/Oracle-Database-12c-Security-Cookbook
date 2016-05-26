@@ -1,0 +1,28 @@
+//How to do it section
+
+$ sqlplus / as sysoper
+SQL> shutdown immediate
+SQL> exit
+
+$ lsnrctl stop
+
+$ cd $ORACLE_HOME/rdbms/lib
+$ make -f ins_rdbms.mk uniaud_on ioracle 
+
+$ lsnrctl start
+
+$ sqlplus / as sysoper
+SQL> startup
+
+SQL> SELECT PARAMETER, VALUE 
+  2  from v$option
+  3  where PARAMETER = 'Unified Auditing';
+
+
+//How it works section
+
+SQL> select audit_option from audit_unified_policies
+     where policy_name='ORA_SECURECONFIG'
+     order by 1; 
+
+

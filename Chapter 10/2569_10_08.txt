@@ -1,0 +1,13 @@
+
+//How to do it section
+
+SQL> connect jack
+
+SQL> audit policy OE_POLICY BY JOHN;
+
+SQL> AUDIT POLICY HR_POLICY WHENEVER SUCCESSFUL;
+
+SQL> audit policy my_policy1 EXCEPT MAJA, ZORAN WHENEVER NOT SUCCESSFUL;
+
+SQL> audit policy role_con_policy;
+

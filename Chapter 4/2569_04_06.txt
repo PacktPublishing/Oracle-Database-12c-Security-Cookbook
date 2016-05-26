@@ -1,0 +1,9 @@
+
+//How to do it section
+
+$ sqlplus maja
+
+SQL> BEGIN
+     DBMS_RLS.ADD_POLICY_CONTEXT  ('HR','EMP_VPD_TEST','DRIVER_CTX','ACTIVE');
+     END;
+     /

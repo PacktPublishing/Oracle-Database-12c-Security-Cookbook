@@ -1,0 +1,20 @@
+//Getting ready section
+
+SQL> connect system
+SQL> create or replace function piter.get_holiday
+  2  return varchar2
+  3  IS
+  4  holiday varchar2(10);
+  5  begin
+  6  IF (RTRIM(TO_CHAR(SYSDATE,'DD-MON')) IN ('1-JAN', '4-JUL','15-NOV')) THEN
+  7  holiday := 'TRUE';
+  8  ELSE
+  9  holiday := 'FALSE';
+ 10  END IF;
+ 11  RETURN holiday;
+ 12  end;
+ 13  /
+
+
+SQL> grant execute on piter.get_holiday to dvsys;
+
