@@ -1,6 +1,6 @@
 # Oracle Database 12c Security cookbook
 
-This book is for DBAs, developers, and architects who are keen to know more about security in Oracle Database 12c. This book is best suited for beginners and intermediate-level database security practitioners. Basic knowledge of Oracle Database is expected, but no prior experience of securing a database is required.
+This code is for DBAs, developers, and architects who are keen to know more about security in Oracle Database 12c. This code is best suited for beginners and intermediate-level database security practitioners. Basic knowledge of Oracle Database is expected, but no prior experience of securing a database is required.
 
 You can also refer to the following books:
 
